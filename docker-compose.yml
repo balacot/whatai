@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    image: balacotes/whatai:backend
+    container_name: whatsapp_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend/chroma_db:/app/chroma_db
+      - ./backend/documentos:/app/documentos
+    environment:
+      - CHROMA_DB_DIR=/app/chroma_db
+      - DOCUMENTS_DIR=/app/documentos
+
+  frontend:
+    build: ./frontend
+    image: balacotes/whatai:frontend
+    container_name: whatsapp_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
