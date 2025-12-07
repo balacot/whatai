@@ -39,9 +39,12 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/${{ secrets.EC2_USER }}/whatsapp_agent
+            # Disable BuildKit to avoid "requires buildx" error
+            export DOCKER_BUILDKIT=0
+            export COMPOSE_DOCKER_CLI_BUILD=0
             # Stop existing containers
-            sudo docker-compose down
+            sudo -E docker-compose down
             # Build and start new containers
-            sudo docker-compose up --build -d
+            sudo -E docker-compose up --build -d
             # Prune unused images to save space
             sudo docker system prune -f
